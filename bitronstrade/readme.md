@@ -45,11 +45,45 @@ day:19
 Remember that the total account balance at day 19 will be `$0` because all the  ballance has been put back to the investments
 
 From these data we can already begin to model our investments class
-
+## Investments 
 It has the following features
 * It's dead if the remaining days is 0
-* It has daily input
-
+* It has daily input which is basically `amount*rate/days` 
+>> `rate = 1.5`
+>
+>> ` days = 30`
+>
+>> ` dailyInput` is `amount * 1.5 / 30` or ` amount* 0.05`
+* The start day will be crucial especially in the callender
+* Finally we have a function that moves from one day to another
+```js
+class Investment{
+ constructor(amount, rate, days, startDay){
+    
+    this.dailyInput=(amount*.05);
+    this.amount=amount;
+    this.rate=rate;
+    this.days=days;
+    this.givenDays=0;
+    this.remainingDays=days;
+    this.alive=true;
+    this.startDay=startDay;
+    this.endDay=startDay+30;
+};
+nextDay(){
+    //Check if there are remaining days, kill it if there is none
+    //Also check if it's alive, stop if it's not
+    if(this.remainingDays<1 || !this.alive){
+        this.alive=false
+        return 0;
+    };
+    this.givenDays++;
+    this.remainingDays--;
+    if(this.remainingDays < 1) this.alive=false;
+    return this.dailyInput;
+}
+}
+```
 A day can also have the following
 * Alive investments 
 * Total amount streaming in from the alive investments
