@@ -15,4 +15,49 @@ Multiple investments can be running in parallel ie you can have a $26 investment
 
 The way I do it to get the most profit within the shortest time is to reinvest as long as the balance is greater than $25
 
-Another crucial thing to consider i
+In my case I started with $27 in the standard plan
+
+The rate is `0.05` per day for `30 days`
+
+The daily returns is `27 * .05` which is $`1.35`
+
+I wait until it's above `$25` so that I can re-invest
+
+After `19 days` the amount is `$25.65` then we reinvest everything
+
+Now we have our second `investment` running while our first is still alive
+
+Now at the 19th day the investments are such that
+```js
+const investments=[
+{deposit:27, dailyInput: 1.35, remainingDays: 11},
+{deposit:25.65, dailyInput: 1.28, remainingDays:30}
+]
+```
+And the daily data is
+```js
+const day19={
+dailyInput:2.63, //sum of all `dailyInput` from all the investments 
+accBalance:0,
+day:19
+}
+```
+Remember that the total account balance at day 19 will be `$0` because all the  ballance has been put back to the investments
+
+From these data we can already begin to model our investments class
+
+It has the following features
+* It's dead if the remaining days is 0
+* It has daily input
+
+A day can also have the following
+* Alive investments 
+* Total amount streaming in from the alive investments
+* Overall sum of money in the account
+* We can check if account balance is eligible for a reinvestment
+
+My goal at this point is to make a callender to show me the days that I will be reinvesting
+
+The idea of having information about each day is just an additional feature
+
+We will instead create a callender which will have
