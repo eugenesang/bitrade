@@ -95,3 +95,59 @@ My goal at this point is to make a callender to show me the days that I will be 
 The idea of having information about each day is just an additional feature
 
 We will instead create a callender which will have
+* A store for all the investments
+* A store for all days passed
+* Total ballance at the time of stoppage
+* The current day
+It also needs to do the following
+* Shift to the next day, which will 
+  > record the information of the current day in the day's store
+  > Calculate the total ballance of the day
+  > Call the re invest function 
+* Reinvest which will check the ballance and continue if it's enough for reinvestment 
+* Withdraw will move to the next day without reinvesting, you can only withdraw 30 days earlier than the actual withdrawal day because it will take at least 30 days for the latest investment to complete
+```js
+class Calender{
+    constructor(){
+        this.investmets=[];
+        this.day=0;
+        this.days=[];
+        this.total=0;
+    }
+    nextDay(){
+        this.day++;
+        let moneyIn=0;
+        for(let i of this.investmets){
+            this.total+=i.nextDay();
+            moneyIn+=i.dailyInput;
+        }
+        this.days.push({day:this.day, moneyIn:moneyIn.toFixed(2), total:this.total.toFixed(2)})
+        this.reinvest();
+        return this;
+    }
+    reinvest(){
+        if(this.total <25) return ;
+        this.investmets.push(new Investment(this.total, 1.5, 30, this.day));
+        this.total=0;
+    }
+    withdraw(){
+        let bal=this.total;
+        for(let inv of this.investmets){
+            bal+= inv.remainingDays*inv.dailyInput;
+            inv.remainingDays=0;
+            inv.alive=false;
+        }
+        this.day+=30;
+        return bal;
+    }
+}
+```
+After all that we set up our ` objects ` from the classes we have made
+
+We run the investments for the preferred time and then withdraw.
+
+There is a bug I can't fix that can't allow me to represent my numbers in `two decimal places` considering we are handling money
+
+That's why I formatted the investments and day's data
+
+We then print the output in a JSON file which will be used to make a readable table or template callender
