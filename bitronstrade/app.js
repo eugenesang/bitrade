@@ -1,8 +1,11 @@
+const {writeFileSync}= require('fs');
+const day1=new Date("Jul 3 2021");
+
 class Investment{
  constructor(amount, rate, days, startDay){
     
-    this.dailyInput=(amount*.05);
-    this.amount=amount;
+    this.dailyInput= +(amount*.05).toFixed(2);
+    this.amount= +amount.toFixed(2);
     this.rate=rate;
     this.days=days;
     this.givenDays=0;
@@ -36,11 +39,12 @@ class Calender{
         let moneyIn=0;
         for(let i of this.investmets){
             this.total+=i.nextDay();
-            moneyIn+=i.dailyInput;
+            moneyIn+=i.alive? i.dailyInput:0;
         }
-        this.days.push({day:this.day, moneyIn:moneyIn.toFixed(2), total:this.total.toFixed(2)})
+        let day=new Date('Jul 03 2022').setDate(day1.getDate()+this.day);
+        this.days.push({day:new Date(day).toDateString(), moneyIn:+moneyIn.toFixed(2), total:+this.total.toFixed(2)})
         this.reinvest();
-        return this;
+        return this.total;
     }
     reinvest(){
         if(this.total <25) return ;
@@ -48,27 +52,35 @@ class Calender{
         this.total=0;
     }
     withdraw(){
-        let bal=this.total;
-        for(let inv of this.investmets){
-            bal+= inv.remainingDays*inv.dailyInput;
-            inv.remainingDays=0;
-            inv.alive=false;
+        
+        let d=30;
+        while(d>0){
+            d--;
+            this.day++;
+            let moneyIn=0;
+            for(let i of this.investmets){
+                this.total+= +i.nextDay();
+                moneyIn+=i.alive? +i.dailyInput:0;
+            }
+            let day=new Date('Jul 03 2022').setDate(day1.getDate()+this.day);
+            this.days.push({day:new Date(day).toDateString(), moneyIn:+moneyIn.toFixed(2), total:+this.total.toFixed(2)})
         }
-        this.day+=30;
-        return bal;
+        this.total=+this.total.toFixed(2);
+        return this.total;
     }
 }
 let a=new Investment(27, 1.5, 30, 0);
 let day=new Calender();
 day.investmets.push(a);
-for(let i =0; i<151; i++){
+for(let i =0; i<161; i++){
     day.nextDay();
 }
+day.withdraw()
 for(let e of day.investmets){
     e.dailyInput=e.dailyInput.toFixed(2);
     e.amount=e.amount.toFixed(2);
 }
 
-console.log(day.withdraw());
-const {writeFileSync}= require('fs');
+console.log(day1.toDateString());
+
 writeFileSync('money.json', JSON.stringify(day, null, 2));
